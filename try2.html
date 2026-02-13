@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>For my forever love ❤️</title>
+
+  <!-- Tailwind + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Cinzel:wght@700&family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(145deg, #fff0f5 0%, #ffe4ec 50%, #ffe0f0 100%);
+      font-family: 'Baloo 2', cursive;
+      color: #2d1b2e;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* cinematic soft bars */
+    .bar {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 6vh;
+      background: rgba(255, 200, 220, 0.25);
+      backdrop-filter: blur(2px);
+      z-index: 40;
+      pointer-events: none;
+    }
+    .top-bar { top: 0; }
+    .bottom-bar { bottom: 0; }
+
+    /* floating hearts */
+    .float-heart {
+      position: fixed;
+      bottom: -10px;
+      font-size: clamp(18px, 6vw, 40px);
+      opacity: 0.8;
+      animation: rise 7s linear infinite;
+      z-index: 30;
+      pointer-events: none;
+      filter: drop-shadow(0 0 8px #ffb6c1);
+    }
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 0.9; }
+      100% { transform: translateY(-120vh) scale(1.6); opacity: 0; }
+    }
+
+    /* countdown */
+    #countdown {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(80px, 22vw, 200px);
+      font-family: 'Cinzel', serif;
+      color: #b34180;
+      text-shadow: 0 0 40px #ffb6c1, 0 0 20px #fff;
+      z-index: 100;
+      transition: opacity 0.5s;
+    }
+
+    /* main hidden at start */
+    #main {
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    #main.show {
+      opacity: 1;
+    }
+
+    /* ===== FIXED PHOTO SHAPE - NO CROPPING ===== */
+    /* Now shows FULL photo without cropping */
+    .photo-frame {
+      width: 100%;
+      max-width: 600px;  /* Good size for full photos */
+      margin-left: auto;
+      margin-right: auto;
+      background: #ffeef5;
+      position: relative;
+      transition: box-shadow 0.4s, transform 0.3s;
+      border-radius: 24px;  /* Soft rounded corners */
+      padding: 12px;  /* White border effect */
+      background: white;
+      box-shadow: 0 25px 50px -8px rgba(180, 60, 100, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .photo-frame:hover {
+      transform: scale(1.02);
+      box-shadow: 0 30px 60px -5px rgba(200, 80, 120, 0.5);
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: auto;  /* Auto height preserves original proportions */
+      display: block;
+      border-radius: 16px;  /* Inner image rounded corners */
+      transition: opacity 0.7s ease;
+      will-change: opacity;
+    }
+
+    /* Alternative: If you want vertical photos to fit nicely */
+    /* Add this class to photo-frame if needed */
+    .photo-frame.vertical-fit img {
+      max-height: 70vh;
+      width: auto;
+      margin: 0 auto;
+    }
+
+    /* nav buttons – adjusted for new frame */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      color: #b34180;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 6px 18px rgba(255, 150, 180, 0.5);
+      cursor: pointer;
+      transition: 0.25s;
+      z-index: 20;
+      border: 2px solid white;
+    }
+    .nav-btn:hover {
+      background: white;
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 10px 28px #ff85a5;
+    }
+    .nav-btn.left { left: 25px; }
+    .nav-btn.right { right: 25px; }
+
+    /* proposal popup */
+    #proposal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(12px);
+      color: #b33b6b;
+      padding: clamp(24px, 7vw, 48px);
+      border-radius: 48px;
+      text-align: center;
+      box-shadow: 0 40px 70px #ffb6c1;
+      transition: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 200;
+      width: 90%;
+      max-width: 460px;
+      border: 3px solid white;
+    }
+    #proposal.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* rose petal */
+    .petal {
+      position: fixed;
+      top: -20px;
+      font-size: 22px;
+      filter: drop-shadow(0 0 6px #ff9eb5);
+      animation: petalFall linear forwards;
+      z-index: 25;
+      pointer-events: none;
+    }
+    @keyframes petalFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+      100% { transform: translateY(110vh) rotate(420deg); opacity: 0; }
+    }
+
+    /* typewriter text space */
+    #message {
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    /* content card */
+    .content-card {
+      background: rgba(255, 250, 250, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 60px 60px 40px 40px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* photo counter */
+    .photo-counter {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      padding: 6px 18px;
+      border-radius: 50px;
+      color: #b34180;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 16px;
+      border: 1px solid white;
+    }
+
+    /* Loading placeholder style */
+    .photo-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff85a5;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center p-3 sm:p-5">
+
+  <!-- soft cinematic bars -->
+  <div class="bar top-bar"></div>
+  <div class="bar bottom-bar"></div>
+
+  <!-- countdown centerpiece -->
+  <div id="countdown">5</div>
+
+  <!-- MAIN LUXURY CONTENT -->
+  <div id="main" class="w-full max-w-5xl mx-auto hidden flex-col items-center justify-center min-h-screen py-8 px-3 sm:px-6 text-center">
+
+    <h1 class="font-[Pacifico] text-[clamp(36px,10vw,80px)] leading-tight text-[#a53f6c] drop-shadow-lg mb-5 sm:mb-8">
+      Happy Birthday<br class="sm:hidden"> My Queen ❤️
+    </h1>
+
+    <!-- premium glass card -->
+    <div class="content-card w-full p-6 sm:p-8 shadow-2xl">
+
+      <!-- PHOTO SLIDESHOW - FULL PHOTO VISIBLE, NO CROPPING -->
+      <div class="relative flex flex-col items-center">
+        <div class="photo-frame">
+          <img id="slide" src="https://placehold.co/600x400/ff9eb5/ffffff?text=Your+Beautiful+Photo" alt="memory">
+          
+          <!-- Navigation buttons -->
+          <div class="nav-btn left" onclick="prevPhoto()" aria-label="previous">←</div>
+          <div class="nav-btn right" onclick="nextPhoto()" aria-label="next">→</div>
+        </div>
+        
+        <!-- photo counter -->
+        <div id="photo-counter" class="photo-counter">1/4 💝</div>
+      </div>
+
+      <!-- name typed -->
+      <h2 id="typed" class="text-pink-700 font-bold mb-3 text-[clamp(22px,5vw,36px)]"></h2>
+
+      <!-- love message -->
+      <div id="message" class="text-[#3a2a33] text-[clamp(16px,3.5vw,20px)] leading-relaxed max-w-xl mx-auto px-2"></div>
+
+      <!-- celebrate button -->
+      <button id="celebrate"
+        class="mt-8 bg-[#ff85a5] hover:bg-[#ff6b8b] text-white text-xl sm:text-2xl px-10 py-3 rounded-full shadow-xl transition-all transform hover:scale-105 active:scale-100 border border-white/30">
+        Celebrate ❤️
+      </button>
+
+    </div>
+  </div>
+
+  <!-- proposal popup -->
+  <div id="proposal">
+    <h2 class="text-3xl sm:text-4xl mb-5 font-bold">Will you be mine forever? 💍❤️</h2>
+    <button onclick="closeProposal()" class="bg-[#ff85a5] hover:bg-[#ff6b8b] text-white px-10 py-4 rounded-full text-2xl shadow-xl transition">
+      Yes, forever 💖
+    </button>
+  </div>
+
+  <!-- gentle background music -->
+  <audio id="music" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2023/08/21/audio_4d33e1e1b7.mp3?filename=romantic-piano-melody-181840.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    (function() {
+      "use strict";
+
+      /* ========================================================
+         ❤️  REPLACE THESE WITH YOUR ACTUAL PHOTO URLs
+         ====================================================== */
+      const photos = [
+        "https://placehold.co/800x600/ffb6c1/ffffff?text=Photo+1",  // Replace with your photo URL
+        "https://placehold.co/600x800/ff9eb5/ffffff?text=Photo+2",  // Replace with your photo URL
+        "https://placehold.co/700x500/ff85a5/ffffff?text=Photo+3",  // Replace with your photo URL
+        "https://placehold.co/900x600/ff6b8b/ffffff?text=Photo+4"   // Replace with your photo URL
+      ];
+      /* ====================================================== */
+
+      // DOM elements
+      const cdEl = document.getElementById('countdown');
+      const mainEl = document.getElementById('main');
+      const music = document.getElementById('music');
+      const imgEl = document.getElementById('slide');
+      const typedEl = document.getElementById('typed');
+      const msgEl = document.getElementById('message');
+      const celebrateBtn = document.getElementById('celebrate');
+      const proposalEl = document.getElementById('proposal');
+      const counterEl = document.getElementById('photo-counter');
+
+      let currentIndex = 0;
+      let autoTimer = null;
+
+      // Update counter display
+      function updateCounter() {
+        if (counterEl) {
+          counterEl.textContent = `${currentIndex + 1}/${photos.length} 💝`;
+        }
+      }
+
+      // ---- show photo without cropping ----
+      function showPhoto(index) {
+        if (!imgEl) return;
+        
+        // Fade out
+        imgEl.style.opacity = '0';
+
+        setTimeout(() => {
+          // Change photo - will show FULL image without cropping
+          imgEl.src = photos[index];
+          
+          // Log to console to help debug
+          console.log("Loading photo:", photos[index]);
+          
+          // Fade in
+          imgEl.style.opacity = '1';
+          
+          // Update counter
+          updateCounter();
+        }, 400);
+      }
+
+      window.nextPhoto = function() {
+        currentIndex = (currentIndex + 1) % photos.length;
+        showPhoto(currentIndex);
+        resetAutoSlide();
+      };
+
+      window.prevPhoto = function() {
+        currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+        showPhoto(currentIndex);
+        resetAutoSlide();
+      };
+
+      function resetAutoSlide() {
+        if (autoTimer) clearInterval(autoTimer);
+        autoTimer = setInterval(() => {
+          currentIndex = (currentIndex + 1) % photos.length;
+          showPhoto(currentIndex);
+        }, 5000);
+      }
+
+      // ---- mobile swipe support ----
+      if (imgEl) {
+        let touchStartX = 0;
+        imgEl.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].clientX;
+        }, { passive: true });
+        imgEl.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].clientX;
+          const diff = touchStartX - touchEndX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) nextPhoto();
+            else prevPhoto();
+          }
+        });
+      }
+
+      // ---- floating hearts ----
+      function createFloatingHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'float-heart';
+        heart.innerHTML = ['💖','💗','💘','💕','❤️'][Math.floor(Math.random() * 5)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+        heart.style.fontSize = (Math.random() * 25 + 20) + 'px';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 10000);
+      }
+
+      // ---- rose petals ----
+      function createPetal() {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.innerHTML = '🌹';
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDuration = (Math.random() * 4 + 5) + 's';
+        petal.style.fontSize = (Math.random() * 16 + 18) + 'px';
+        document.body.appendChild(petal);
+        setTimeout(() => petal.remove(), 9000);
+      }
+
+      // ---- start experience ----
+      function startExperience() {
+        setInterval(createFloatingHeart, 700);
+        setInterval(createPetal, 1300);
+
+        typeWriter("To my beautiful love ❤️", typedEl, 70);
+        typeMessage();
+
+        setTimeout(() => {
+          proposalEl.classList.add('show');
+        }, 16000);
+
+        resetAutoSlide();
+        updateCounter();
+      }
+
+      // typewriter for name
+      function typeWriter(text, element, speed) {
+        if (!element) return;
+        let i = 0;
+        element.textContent = '';
+        function write() {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(write, speed);
+          }
+        }
+        write();
+      }
+
+      // typewriter for message
+      function typeMessage() {
+        const longMsg = "The world became brighter the day you were born. You are my forever, my always, my everything. Every moment with you is a dream, and I never want to wake up.";
+        let i = 0;
+        msgEl.textContent = '';
+        function write() {
+          if (i < longMsg.length) {
+            msgEl.textContent += longMsg.charAt(i);
+            i++;
+            setTimeout(write, 42);
+          }
+        }
+        write();
+      }
+
+      // ---- countdown ----
+      let count = 5;
+      const timer = setInterval(() => {
+        count--;
+        if (cdEl) cdEl.textContent = count;
+
+        if (count === 0) {
+          clearInterval(timer);
+          if (cdEl) cdEl.style.display = 'none';
+          mainEl.classList.remove('hidden');
+          mainEl.classList.add('show', 'flex');
+          music.play().catch(e => {
+            document.addEventListener('click', function musicFallback() {
+              music.play();
+              document.removeEventListener('click', musicFallback);
+            }, { once: true });
+          });
+          startExperience();
+        }
+      }, 1000);
+
+      // ---- fireworks ----
+      celebrateBtn.addEventListener('click', () => {
+        for (let i = 0; i < 6; i++) {
+          setTimeout(() => {
+            confetti({
+              particleCount: 150,
+              spread: 90,
+              origin: { x: Math.random(), y: Math.random() * 0.5 },
+              colors: ['#ffb6c1', '#ff9eb5', '#ff85a5', '#ff6b8b', '#fba0b3']
+            });
+          }, i * 150);
+        }
+      });
+
+      // ---- close proposal ----
+      window.closeProposal = function() {
+        proposalEl.classList.remove('show');
+        confetti({ particleCount: 300, spread: 120, origin: { y: 0.5 } });
+      };
+
+      // ---- sparkle cursor ----
+      document.addEventListener('mousemove', (e) => {
+        const spark = document.createElement('div');
+        spark.textContent = '✨';
+        spark.style.position = 'fixed';
+        spark.style.left = e.pageX + 'px';
+        spark.style.top = e.pageY + 'px';
+        spark.style.fontSize = '22px';
+        spark.style.pointerEvents = 'none';
+        spark.style.opacity = '0.6';
+        spark.style.filter = 'drop-shadow(0 0 5px #ffa5c3)';
+        spark.style.zIndex = '9999';
+        spark.style.animation = 'fade 1s linear forwards';
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 800);
+      });
+
+      // fade style for spark
+      const style = document.createElement('style');
+      style.innerHTML = `@keyframes fade{0%{opacity:0.7;}100%{opacity:0;transform:scale(2.2);}}`;
+      document.head.appendChild(style);
+
+      // initial image
+      if (photos.length > 0 && imgEl) {
+        imgEl.src = photos[0];
+      }
+
+    })();
+  </script>
+
+  <style>
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+  </style>
+
+</body>
+</html>
